@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #0f0f0f;
+    color: #f1f1f1;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2em;
+}
+
+h1 {
+    text-align: center;
+    color: #ff3c3c;
+    margin-bottom: 1em;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background: #1c1c1c;
+    padding: 1.5em;
+    border-radius: 10px;
+}
+
+.search-form input[type="text"] {
+    padding: 0.8em;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #2a2a2a;
+    color: white;
+}
+
+.sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.sources label {
+    background: #292929;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.sources input {
+    margin-right: 0.5em;
+}
+
+.sources label:hover {
+    background: #333;
+}
+
+button {
+    padding: 0.8em;
+    font-size: 1em;
+    background: #ff3c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #e03131;
+}
+
+.results {
+    margin-top: 2em;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+}
+
+.article-card {
+    background: #1a1a1a;
+    padding: 1em 1.5em;
+    border-left: 4px solid #ff3c3c;
+    border-radius: 6px;
+}
+
+.article-card h2 {
+    margin-top: 0;
+    font-size: 1.25em;
+}
+
+.article-card a {
+    color: #ff3c3c;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 0.5em;
+}
+
+.article-card a:hover {
+    text-decoration: underline;
+}

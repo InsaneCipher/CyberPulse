@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Keyword Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📰 NewsFinder</h1>
+
+        <form action="/search" method="POST" class="search-form">
+            <input type="text" name="keyword" placeholder="Enter a keyword..." required>
+            <div class="sources">
+                <label><input type="checkbox" name="sources" value="BBC"> BBC</label>
+                <label><input type="checkbox" name="sources" value="CNN"> CNN</label>
+                <label><input type="checkbox" name="sources" value="Reuters"> Reuters</label>
+                <label><input type="checkbox" name="sources" value="TechCrunch"> TechCrunch</label>
+            </div>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if results %}
+            <div class="results">
+                {% for article in results %}
+                    <div class="article-card">
+                        <h2>{{ article.title }}</h2>
+                        <p>{{ article.snippet }}</p>
+                        <a href="{{ article.url }}" target="_blank">Read more →</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
