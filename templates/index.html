@@ -12,10 +12,17 @@
         <form action="/search" method="POST" class="search-form">
             <input type="text" name="keyword" placeholder="Enter a keyword..." required>
             <div class="sources">
-                <label><input type="checkbox" name="sources" value="BBC"> BBC</label>
-                <label><input type="checkbox" name="sources" value="CNN"> CNN</label>
-                <label><input type="checkbox" name="sources" value="Reuters"> Reuters</label>
-                <label><input type="checkbox" name="sources" value="TechCrunch"> TechCrunch</label>
+                {% for source in options %}
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="sources"
+                            value="{{ source }}"
+                            {% if source in sources %}checked{% endif %}
+                        >
+                        {{ source }}
+                    </label><br>
+                {% endfor %}
             </div>
             <button type="submit">Search</button>
         </form>
