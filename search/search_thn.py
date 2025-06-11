@@ -5,8 +5,8 @@ from search.contains_keyword import contains_keyword
 
 
 def search_thn(keyword, source, results, seen_links, url_blacklist):
-    if "The Hacker News" not in results:
-        results["The Hacker News"] = []
+    if source not in results:
+        results[source] = []
 
     rss_url = "https://feeds.feedburner.com/TheHackersNews"
     feed = feedparser.parse(rss_url)
@@ -20,8 +20,7 @@ def search_thn(keyword, source, results, seen_links, url_blacklist):
             if contains_keyword(title, keyword) or keyword.lower() == "*":
                 try:
                     response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    #print(f"\n\n{soup}")
+                    soup = BeautifulSoup(response.text, 'lxml')
 
                     # Try a few common class names used by The Hacker News
                     article_body = soup.find('div', class_='articlebody') \
@@ -40,5 +39,5 @@ def search_thn(keyword, source, results, seen_links, url_blacklist):
                 except Exception as e:
                     print(f"[ERROR] Failed to parse {full_url}: {e}")
 
-    results["The Hacker News"] += matched
+    results[source] += matched
     return results

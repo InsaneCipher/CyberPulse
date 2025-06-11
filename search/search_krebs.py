@@ -25,7 +25,7 @@ def search_krebs(keyword, source, results, seen_links, url_blacklist):
             if contains_keyword(title, keyword) or keyword.lower() == "*":
                 # Fetch the article HTML
                 response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
-                soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.text, 'lxml')
 
                 # Try to find the first paragraph of the article
                 article_body = soup.find('div', class_='entry-content')  # Main content div

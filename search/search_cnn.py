@@ -39,7 +39,7 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
                 if contains_keyword(title, keyword) or keyword.lower() == "*":
                     try:
                         response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
-                        soup = BeautifulSoup(response.text, 'html.parser')
+                        soup = BeautifulSoup(response.text, 'lxml')
                         # print(f"\n\n{soup}")
 
                         # Try a few common class names used by The Hacker News

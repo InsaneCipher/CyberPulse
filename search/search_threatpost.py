@@ -4,11 +4,11 @@ import feedparser
 from search.contains_keyword import contains_keyword
 
 
-def search_bbc(keyword, source, results, seen_links, url_blacklist):
+def search_threatpost(keyword, source, results, seen_links, url_blacklist):
     if source not in results:
         results[source] = []
 
-    rss_url = "http://feeds.bbci.co.uk/news/technology/rss.xml"
+    rss_url = "https://threatpost.com/feed/"
     feed = feedparser.parse(rss_url)
 
     matched = []

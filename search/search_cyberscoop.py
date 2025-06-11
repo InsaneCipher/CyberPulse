@@ -1,14 +1,25 @@
+import re
 import requests
 from bs4 import BeautifulSoup
 import feedparser
 from search.contains_keyword import contains_keyword
 
 
-def search_bbc(keyword, source, results, seen_links, url_blacklist):
+def clean_html_paragraph(paragraph_html):
+    # Remove all HTML tags and clean whitespace
+    return re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', paragraph_html)).strip()
+
+
+def get_first_sentence(text):
+    match = re.match(r'^(.+?[.!?]["\')]*)(\s|$)', text)
+    return match.group(1).strip() if match else text.strip()
+
+
+def search_cyberscoop(keyword, source, results, seen_links, url_blacklist):
     if source not in results:
         results[source] = []
 
-    rss_url = "http://feeds.bbci.co.uk/news/technology/rss.xml"
+    rss_url = "https://www.cyberscoop.com/feed/"
     feed = feedparser.parse(rss_url)
 
     matched = []
@@ -22,17 +33,19 @@ def search_bbc(keyword, source, results, seen_links, url_blacklist):
                     response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
                     soup = BeautifulSoup(response.text, 'lxml')
 
-                    # Try a few common class names used by The Hacker News
                     article_body = soup.find('div', class_='articlebody') \
-                                  or soup.find('div', class_='articlebody clear cf') \
-                                  or soup.find('div', id='articlebody')
+                                or soup.find('div', class_='articlebody clear cf') \
+                                or soup.find('div', id='articlebody')
 
                     if article_body:
-                        # Find the first <p> tag, even if nested
                         first_p_tag = article_body.find('p')
-                        first_p = first_p_tag.get_text(strip=True) if first_p_tag else "No paragraph found."
+                        raw_paragraph = str(first_p_tag) if first_p_tag else ""
+                        cleaned = clean_html_paragraph(raw_paragraph)
+                        first_p = get_first_sentence(cleaned)
                     else:
-                        first_p = entry.summary
+                        summary = entry.get("summary", "")
+                        cleaned = clean_html_paragraph(summary)
+                        first_p = get_first_sentence(cleaned)
 
                     seen_links.add(full_url)
                     matched.append((title, full_url, first_p))
