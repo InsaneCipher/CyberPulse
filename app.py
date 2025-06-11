@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session
 import threading
 import webview
+import json
 from concurrent.futures import ThreadPoolExecutor
 from search.search_cnn import search_cnn
 from search.search_bbc import search_bbc
@@ -16,6 +17,13 @@ app.secret_key = 'news-search'  # required for sessions
 all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost']
 with open("blacklist.txt", "r", encoding="utf-8") as f:
     url_blacklist = f.read().split("\n")
+
+# Load cache
+try:
+    with open("results_cache.txt", "r", encoding="utf-8") as file:
+        cache = set(line.strip() for line in file)
+except FileNotFoundError:
+    cache = set()
 
 
 def run_search(keyword, source, results, seen_links):
@@ -99,6 +107,16 @@ def search():
 
     except SyntaxError as e:
         print(f"An exception occurred! \nError: {e}")
+
+    # Write new results if not in cache
+    with open("results_cache.txt", "a", encoding="utf-8") as file:
+        for result in results:
+            # Convert dict to a normalized JSON string (sorted keys to ensure consistency)
+            normalized = json.dumps(result, sort_keys=True)
+
+            if normalized not in cache:
+                file.write(normalized + "\n")
+                cache.add(normalized)  # Add immediately so no duplicates if looped again
 
     return render_template("index.html", results=results, options=all_options,
                            sources=sources, keywords=keywords)

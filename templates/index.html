@@ -11,10 +11,10 @@
 
         <form action="/search" method="POST" class="search-form">
             {% if keywords %}
-            <input type="text" name="keyword" placeholder="Enter a keyword..." value="{{ keywords }}" required>
+            <input type="text" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." value="{{ keywords }}" required>
             {% endif %}
             {% if not keywords %}
-            <input type="text" name="keyword" placeholder="Enter a keyword..." required>
+            <input type="text" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." required>
             {% endif %}
             <div class="sources">
                 {% for source in options %}
