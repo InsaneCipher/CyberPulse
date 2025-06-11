@@ -68,6 +68,19 @@ button {
     transition: background 0.3s ease;
 }
 
+/* Style when loading */
+button.loading {
+    padding: 0.8em;
+    font-size: 1em;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    background-color: gray;
+    pointer-events: none;  /* disables clicks */
+}
+
 button:hover {
     background: #e03131;
 }

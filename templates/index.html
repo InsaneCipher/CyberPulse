@@ -10,7 +10,12 @@
         <h1>📰 NewsFinder</h1>
 
         <form action="/search" method="POST" class="search-form">
+            {% if keywords %}
+            <input type="text" name="keyword" placeholder="Enter a keyword..." value="{{ keywords }}" required>
+            {% endif %}
+            {% if not keywords %}
             <input type="text" name="keyword" placeholder="Enter a keyword..." required>
+            {% endif %}
             <div class="sources">
                 {% for source in options %}
                     <label>
@@ -24,7 +29,8 @@
                     </label><br>
                 {% endfor %}
             </div>
-            <button type="submit">Search</button>
+            <button id="search-button" type="submit">Search</button>
+            <div id="loading" style="display:none;">Searching, please wait...</div>
         </form>
 
         {% if results %}
@@ -39,5 +45,21 @@
             </div>
         {% endif %}
     </div>
+
+<script>
+    const btn = document.getElementById('search-button');
+    const loading = document.getElementById('loading');
+
+    btn.addEventListener('click', async () => {
+        btn.classList.add('loading');  // Change button style
+        loading.style.display = 'block'; // Show loading message
+
+        // Simulate long process (replace with your real async call)
+        await new Promise(resolve => setTimeout(resolve, 600000));
+
+        btn.classList.remove('loading');  // Revert button style
+        loading.style.display = 'none';   // Hide loading message
+    });
+</script>
 </body>
 </html>
