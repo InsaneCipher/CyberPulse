@@ -72,7 +72,7 @@ def search():
                     snippet = article[2]
                     results_dict = {"title": f"{source_name} - {title}", "snippet": f"{snippet}", "url": f"{full_url}"}
                     results.append(results_dict)
-                    #print(results_dict)
+                    print(results_dict)
 
     except SyntaxError as e:
         print(f"An exception occurred! \nError: {e}")
