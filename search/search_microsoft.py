@@ -19,12 +19,13 @@ def search_microsoft(keyword, source, results, seen_links, url_blacklist):
         full_url = entry.link
         summary = entry.summary
         first_p = check_cache(full_url)
+        publish_date = entry.get("published", entry.get("updated", "Unknown date"))
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
                 if first_p is not None:
                     seen_links.add(full_url)
-                    matched.append((title, full_url, first_p))
+                    matched.append((title, full_url, first_p, publish_date))
                 else:
                     try:
                         response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -47,7 +48,7 @@ def search_microsoft(keyword, source, results, seen_links, url_blacklist):
 
                         first_p = re.sub(r'The post.*', '', first_p)
                         seen_links.add(full_url)
-                        matched.append((title, full_url, first_p))
+                        matched.append((title, full_url, first_p, publish_date))
                     except Exception as e:
                         print(f"[ERROR] Failed to parse {full_url}: {e}")
 

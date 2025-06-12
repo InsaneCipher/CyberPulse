@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import feedparser
 from search.contains_keyword import contains_keyword
 from search.check_cache import check_cache
+import re
 
 
 def search_bbc(keyword, source, results, seen_links, url_blacklist):
@@ -16,13 +17,15 @@ def search_bbc(keyword, source, results, seen_links, url_blacklist):
     for entry in feed.entries:
         title = entry.title
         full_url = entry.link
+        publish_date = entry.get("published", entry.get("updated", "Unknown date"))
+        publish_date = re.sub(r'GMT', '+0000 ', publish_date)
         first_p = check_cache(full_url)
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
                 if first_p is not None:
                     seen_links.add(full_url)
-                    matched.append((title, full_url, first_p))
+                    matched.append((title, full_url, first_p, publish_date))
                 else:
                     try:
                         response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -41,7 +44,7 @@ def search_bbc(keyword, source, results, seen_links, url_blacklist):
                             first_p = entry.summary
 
                         seen_links.add(full_url)
-                        matched.append((title, full_url, first_p))
+                        matched.append((title, full_url, first_p, publish_date))
                     except Exception as e:
                         print(f"[ERROR] Failed to parse {full_url}: {e}")
 

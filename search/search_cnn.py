@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import feedparser
 from search.contains_keyword import contains_keyword
 from search.check_cache import check_cache
+import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 def search_cnn(keyword, source, results, seen_links, url_blacklist):
@@ -17,6 +20,18 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
         feed = feedparser.parse(url)
         for entry in feed.entries:
             title = entry.title
+            full_url = entry.link
+            pattern = r"/(\d{4})/(\d{2})/(\d{2})/"
+            match = re.search(pattern, full_url)
+            if match:
+                year, month, day = match.groups()
+                dt = datetime(int(year), int(month), int(day), tzinfo=ZoneInfo("America/New_York"))
+                publish_date = dt.strftime("%a, %d %B %Y %H:%M:%S %z")
+            else:
+                publish_date = "Unknown Date"
+
+            print(publish_date)
+
             summary = ""
             try:
                 if title == '':
@@ -34,7 +49,6 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
             except Exception as e:
                 print(f"[ERROR]: {title} = {e}")
 
-            full_url = entry.link
 
             first_p = check_cache(full_url)
 
@@ -42,7 +56,7 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
                 if contains_keyword(title, keyword) or keyword.lower() == "*":
                     if first_p is not None:
                         seen_links.add(full_url)
-                        matched.append((title, full_url, first_p))
+                        matched.append((title, full_url, first_p, publish_date))
                     else:
                         try:
                             response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -62,7 +76,7 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
                                 first_p = summary
 
                             seen_links.add(full_url)
-                            matched.append((title, full_url, first_p))
+                            matched.append((title, full_url, first_p, publish_date))
                         except Exception as e:
                             print(f"[ERROR] Failed to parse {full_url}: {e}")
 

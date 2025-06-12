@@ -101,7 +101,8 @@ def search():
                     title = article[0]
                     full_url = article[1]
                     snippet = article[2]
-                    results_dict = {"title": f"{source_name} - {title}", "snippet": f"{snippet}", "url": f"{full_url}"}
+                    date = article[3]
+                    results_dict = {"title": f"{source_name} - {title}", "snippet": f"{snippet}", "url": f"{full_url}", "date": f"{date}"}
                     results.append(results_dict)
                     print(results_dict)
 
@@ -124,5 +125,6 @@ def search():
 
 if __name__ == "__main__":
     threading.Thread(target=run_flask, daemon=True).start()
-    webview.create_window("Flask App", "http://127.0.0.1:5000/")
+    webview.create_window("NewsFinder", "http://127.0.0.1:5000/")
+    # Add a simple back button (native GUI button)
     webview.start()

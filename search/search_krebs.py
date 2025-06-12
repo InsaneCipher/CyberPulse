@@ -21,12 +21,13 @@ def search_krebs(keyword, source, results, seen_links, url_blacklist):
         title = entry.title
         full_url = entry.link
         first_p = check_cache(full_url)
+        publish_date = entry.get("published", entry.get("updated", "Unknown date"))
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
                 if first_p is not None:
                     seen_links.add(full_url)
-                    matched.append((title, full_url, first_p))
+                    matched.append((title, full_url, first_p, publish_date))
                 else:
                     # Fetch the article HTML
                     response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -37,7 +38,7 @@ def search_krebs(keyword, source, results, seen_links, url_blacklist):
                     first_p = article_body.find('p').get_text()
 
                     seen_links.add(full_url)
-                    matched.append((title, full_url, first_p))
+                    matched.append((title, full_url, first_p, publish_date))
 
     results[source] += matched
     return results

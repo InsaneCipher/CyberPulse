@@ -1,0 +1,7 @@
+pywebview~=5.4
+Flask~=3.1.1
+requests~=2.32.3
+feedparser~=6.0.11
+beautifulsoup4~=4.12.3
+regex~=2023.12.25
+ttkbootstrap~=1.13.10

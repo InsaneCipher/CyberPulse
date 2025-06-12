@@ -38,6 +38,7 @@
                 {% for article in results %}
                     <div class="article-card">
                         <h2>{{ article.title }}</h2>
+                        <p>{{ article.date }}</p>
                         <p>{{ article.snippet }}</p>
                         <a href="{{ article.url }}" target="_blank">Read more →</a>
                     </div>
