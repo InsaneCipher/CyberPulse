@@ -12,10 +12,11 @@ from search.search_securityweek import search_securityweek
 from search.search_microsoft import search_microsoft
 from search.search_threatpost import search_threatpost
 from search.search_cisa import search_cisa
+from search.search_crowdstrike import search_crowdstrike
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
-all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost', 'CISA']
+all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost', 'CISA', 'CrowdStrike']
 with open("blacklist.txt", "r", encoding="utf-8") as f:
     url_blacklist = f.read().split("\n")
 
@@ -59,6 +60,9 @@ def run_search(keyword, source, results, seen_links):
 
     if "CISA" in source:
         results = search_cisa(keyword, "US-CERT (CISA)", results, seen_links, url_blacklist)
+
+    if "CrowdStrike" in source:
+        results = search_crowdstrike(keyword, source, results, seen_links, url_blacklist)
 
     return results
 

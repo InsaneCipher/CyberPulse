@@ -23,6 +23,7 @@ def search_cisa(keyword, source, results, seen_links, url_blacklist):
         # US-CERT date format is like: 'Tue, 27 Jun 2023 19:03:00 GMT'
         # Replace 'GMT' with '+0000' for timezone parsing
         publish_date = re.sub(r'EDT', '-0400', publish_date)
+        publish_date = re.sub(r'EST', '-0500', publish_date)
 
         # Convert to UTC and get epoch time
         if publish_date != "Unknown Date":
@@ -31,33 +32,19 @@ def search_cisa(keyword, source, results, seen_links, url_blacklist):
         else:
             epoch_time = 0
 
-        first_p = check_cache(full_url)
+        soup = BeautifulSoup(entry.summary, 'html.parser')
+        paragraphs = soup.find_all('p')
+
+        # Combine the first few paragraphs into a single string (adjust number as needed)
+        if paragraphs:
+            first_p = "\n\n".join(p.get_text() for p in paragraphs[1:2])
+        else:
+            first_p = soup.get_text(strip=True)[:500]  # fallback to raw text if no <p> tags
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
-                if first_p is not None:
-                    seen_links.add(full_url)
-                    matched.append((title, full_url, first_p, publish_date, epoch_time))
-                else:
-                    try:
-                        response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
-                        soup = BeautifulSoup(response.text, 'lxml')
-
-                        # US-CERT alert pages often have content inside div with id='content' or 'main-content'
-                        article_body = soup.find('div', id='content') or soup.find('div', id='main-content')
-
-                        if article_body:
-                            first_p_tag = article_body.find('p')
-                            first_p = first_p_tag.get_text(strip=True) if first_p_tag else "No paragraph found."
-                        else:
-                            # fallback to summary from feed
-                            first_p = entry.get('summary', 'No summary available.')
-
-                        seen_links.add(full_url)
-                        matched.append((title, full_url, first_p, publish_date, epoch_time))
-                        print(matched)
-                    except Exception as e:
-                        print(f"[ERROR] Failed to parse {full_url}: {e}")
+                seen_links.add(full_url)
+                matched.append((title, full_url, first_p, publish_date, epoch_time))
 
     results[source] += matched
     return results
