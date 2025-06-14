@@ -4,18 +4,41 @@
     <meta charset="UTF-8">
     <title>News Keyword Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script>
+        function checkInput() {
+              const input = document.getElementById("textInput");
+              const button = document.getElementById("search-button");
+              button.disabled = input.value.trim() === "";
+        }
+    </script>
+
+    <script>
+        function checkCheckboxes() {
+              const checkboxes = document.querySelectorAll('input[name="sources"]');
+              const submitBtn = document.getElementById("search-button");
+
+              // Check if any checkbox is checked
+              const oneChecked = Array.from(checkboxes).some(chk => chk.checked);
+
+              // Enable button if at least one is checked
+              submitBtn.disabled = !oneChecked;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>📰 NewsFinder</h1>
 
         <form action="/search" method="POST" class="search-form">
-            {% if keywords %}
-            <input type="text" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." value="{{ keywords }}" required>
-            {% endif %}
-            {% if not keywords %}
-            <input type="text" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." required>
-            {% endif %}
+            <input type="text" id="textInput" oninput="checkInput()" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." value="{{ keywords }}" required>
+            <details>
+              <summary>How to use the search</summary>
+              <p>
+                Enter your search keywords separated by spaces.<br>
+                Use <code>*</code> to get <strong>all results</strong> without filtering by keyword.
+              </p>
+            </details>
             <div class="sources">
                 {% for source in options %}
                     <label>
@@ -23,13 +46,14 @@
                             type="checkbox"
                             name="sources"
                             value="{{ source }}"
+                            onchange="checkCheckboxes()"
                             {% if source in sources %}checked{% endif %}
                         >
                         {{ source }}
                     </label><br>
                 {% endfor %}
             </div>
-            <button id="search-button" type="submit">Search</button>
+            <button id="search-button" type="submit" disabled>Search</button>
             <div id="loading" style="display:none;">Searching, please wait...</div>
         </form>
 
@@ -60,6 +84,12 @@
 
         btn.classList.remove('loading');  // Revert button style
         loading.style.display = 'none';   // Hide loading message
+    });
+</script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        checkInput();  // ensures button is enabled if value already exists
     });
 </script>
 </body>

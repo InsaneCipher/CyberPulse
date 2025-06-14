@@ -1,8 +1,0 @@
-BBC
-CNN
-Krebs
-TheHackerNews
-CyberScoop
-SecurityWeek
-Microsoft
-Threatpost

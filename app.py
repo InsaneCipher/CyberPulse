@@ -11,12 +11,16 @@ from search.search_cyberscoop import search_cyberscoop
 from search.search_securityweek import search_securityweek
 from search.search_microsoft import search_microsoft
 from search.search_threatpost import search_threatpost
+from search.search_cisa import search_cisa
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
-all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost']
+all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost', 'CISA']
 with open("blacklist.txt", "r", encoding="utf-8") as f:
     url_blacklist = f.read().split("\n")
+
+with open('settings.json', 'r') as f:
+    settings = json.load(f)
 
 # Load cache
 try:
@@ -53,6 +57,9 @@ def run_search(keyword, source, results, seen_links):
     if "Threatpost" in source:
         results = search_threatpost(keyword, source, results, seen_links, url_blacklist)
 
+    if "CISA" in source:
+        results = search_cisa(keyword, "US-CERT (CISA)", results, seen_links, url_blacklist)
+
     return results
 
 
@@ -71,10 +78,8 @@ def news_search(keywords, source):
 
 @app.route("/", methods=["GET"])
 def home():
-    with open("options.txt", "r", encoding="utf-8") as f:
-        saved_options = f.read().split("\n")
     return render_template("index.html", results=None, options=all_options,
-                           sources=saved_options)
+                           sources=settings["sources"], keywords=settings["last_search"])
 
 
 def run_flask():
@@ -85,14 +90,20 @@ def run_flask():
 def search():
     keywords = request.form.get("keyword")
     session['keywords'] = keywords
+    settings["last_search"] = keywords
+    with open('settings.json', 'w') as settings_file:
+        json.dump(settings, settings_file, indent=4)
+
     sources = request.form.getlist("sources")
-    with open("options.txt", "w", encoding="utf-8") as f:
-        for source in sources:
-            f.write(source + "\n")
     session['selected_sources'] = sources
+    settings["sources"] = sources
+    with open('settings.json', 'w') as settings_file:
+        json.dump(settings, settings_file, indent=4)
+
     print(f"Sources: {sources}")
 
     results = []
+    sorted_results = []
     try:
         for source in sources:
             raw_results = news_search(keywords, source)
@@ -102,9 +113,12 @@ def search():
                     full_url = article[1]
                     snippet = article[2]
                     date = article[3]
-                    results_dict = {"title": f"{source_name} - {title}", "snippet": f"{snippet}", "url": f"{full_url}", "date": f"{date}"}
+                    epoch = article[4]
+                    results_dict = {"title": f"{source_name} - {title}", "snippet": f"{snippet}", "url": f"{full_url}", "date": f"{date}", "epoch": epoch}
                     results.append(results_dict)
                     print(results_dict)
+
+        sorted_results = sorted(results, key=lambda x: int(x["epoch"]), reverse=True)
 
     except SyntaxError as e:
         print(f"An exception occurred! \nError: {e}")
@@ -119,7 +133,7 @@ def search():
                 file.write(normalized + "\n")
                 cache.add(normalized)  # Add immediately so no duplicates if looped again
 
-    return render_template("index.html", results=results, options=all_options,
+    return render_template("index.html", results=sorted_results, options=all_options,
                            sources=sources, keywords=keywords)
 
 

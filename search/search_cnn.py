@@ -6,6 +6,7 @@ from search.check_cache import check_cache
 import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from datetime import datetime
 
 
 def search_cnn(keyword, source, results, seen_links, url_blacklist):
@@ -26,11 +27,16 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
             if match:
                 year, month, day = match.groups()
                 dt = datetime(int(year), int(month), int(day), tzinfo=ZoneInfo("America/New_York"))
-                publish_date = dt.strftime("%a, %d %B %Y %H:%M:%S %z")
+                publish_date = dt.strftime("%a, %d %b %Y %H:%M:%S %z")
             else:
                 publish_date = "Unknown Date"
 
-            print(publish_date)
+            # Convert to UTC and get epoch time
+            if publish_date != "Unknown Date":
+                dt = datetime.strptime(publish_date, "%a, %d %b %Y %H:%M:%S %z")
+                epoch_time = int(dt.timestamp())
+            else:
+                epoch_time = 0
 
             summary = ""
             try:
@@ -49,14 +55,13 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
             except Exception as e:
                 print(f"[ERROR]: {title} = {e}")
 
-
             first_p = check_cache(full_url)
 
             if full_url not in url_blacklist and full_url not in seen_links:
                 if contains_keyword(title, keyword) or keyword.lower() == "*":
                     if first_p is not None:
                         seen_links.add(full_url)
-                        matched.append((title, full_url, first_p, publish_date))
+                        matched.append((title, full_url, first_p, publish_date, epoch_time))
                     else:
                         try:
                             response = requests.get(full_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -76,7 +81,7 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
                                 first_p = summary
 
                             seen_links.add(full_url)
-                            matched.append((title, full_url, first_p, publish_date))
+                            matched.append((title, full_url, first_p, publish_date, epoch_time))
                         except Exception as e:
                             print(f"[ERROR] Failed to parse {full_url}: {e}")
 
