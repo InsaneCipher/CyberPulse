@@ -35,15 +35,9 @@ h1 {
     color: white;
 }
 
-.sources {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-}
-
 .sources label {
     background: #292929;
-    padding: 0.5em 1em;
+    padding: 0.5em 0.5em;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -114,4 +108,32 @@ button:hover {
 
 .article-card a:hover {
     text-decoration: underline;
+}
+
+/* Main container spacing */
+.source-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* Each category group */
+.source-group {
+  margin-bottom: 1rem;
+}
+
+/* Grid layout for checkboxes */
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Style for label + checkbox */
+.source-grid label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
 }

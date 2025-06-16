@@ -15,11 +15,19 @@ from search.search_cisa import search_cisa
 from search.search_crowdstrike import search_crowdstrike
 from search.search_cloudblog import search_cloudblog
 from search.search_exploit_db import search_exploit_db
+from search.search_sans import search_sans
+from search.search_cisco import search_cisco
+from search.search_aws import search_aws
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
-all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost',
-               'CISA', 'CrowdStrike', 'GoogleCloudBlog', 'ExploitDB']
+
+source_groups = {
+    "Mainstream News": ["BBC", "CNN"],
+    "Cybersecurity Blogs": ["The Hacker News", "Threatpost", "Security Week", "CyberScoop", "Krebs On Security"],
+    "Vendors & Feeds": ["US-CERT (CISA)", "CrowdStrike", "Microsoft Security", "Google Cloud", "AWS Security",
+                        "ExploitDB", "Cisco Talos Intelligence", "SANS Internet Storm Center"]
+}
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:
     url_blacklist = f.read().split("\n")
@@ -44,35 +52,44 @@ def run_search(keyword, source, results, seen_links):
     if "CNN" in source:
         results = search_cnn(keyword, source, results, seen_links, url_blacklist)
 
-    if "Krebs" in source:
+    if "Krebs On Security" in source:
         results = search_krebs(keyword, source, results, seen_links, url_blacklist)
 
-    if "TheHackerNews" in source:
-        results = search_thn(keyword, "The Hacker News", results, seen_links, url_blacklist)
+    if "The Hacker News" in source:
+        results = search_thn(keyword, source, results, seen_links, url_blacklist)
 
     if "CyberScoop" in source:
         results = search_cyberscoop(keyword, source, results, seen_links, url_blacklist)
 
-    if "SecurityWeek" in source:
-        results = search_securityweek(keyword, "Security Week", results, seen_links, url_blacklist)
+    if "Security Week" in source:
+        results = search_securityweek(keyword, source, results, seen_links, url_blacklist)
 
-    if "Microsoft" in source:
-        results = search_microsoft(keyword, "Microsoft Security", results, seen_links, url_blacklist)
+    if "Microsoft Security" in source:
+        results = search_microsoft(keyword, source, results, seen_links, url_blacklist)
 
     if "Threatpost" in source:
         results = search_threatpost(keyword, source, results, seen_links, url_blacklist)
 
-    if "CISA" in source:
-        results = search_cisa(keyword, "US-CERT (CISA)", results, seen_links, url_blacklist)
+    if "US-CERT (CISA)" in source:
+        results = search_cisa(keyword, source, results, seen_links, url_blacklist)
 
     if "CrowdStrike" in source:
         results = search_crowdstrike(keyword, source, results, seen_links, url_blacklist)
 
-    if "GoogleCloudBlog" in source:
-        results = search_cloudblog(keyword, "Google Cloud Blog", results, seen_links, url_blacklist)
+    if "Google Cloud" in source:
+        results = search_cloudblog(keyword, source, results, seen_links, url_blacklist)
 
     if "ExploitDB" in source:
         results = search_exploit_db(keyword, source, results, seen_links, url_blacklist)
+
+    if "SANS Internet Storm Center" in source:
+        results = search_sans(keyword, source, results, seen_links, url_blacklist)
+
+    if "Cisco Talos Intelligence" in source:
+        results = search_cisco(keyword, source, results, seen_links, url_blacklist)
+
+    if "AWS Security" in source:
+        results = search_aws(keyword, source, results, seen_links, url_blacklist)
 
     return results
 
@@ -92,8 +109,9 @@ def news_search(keywords, source):
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html", results=None, options=all_options,
-                           sources=settings["sources"], keywords=settings["last_search"])
+    return render_template("index.html", results=None,
+                           sources=settings["sources"], keywords=settings["last_search"],
+                           source_groups=source_groups)
 
 
 def run_flask():
@@ -147,8 +165,8 @@ def search():
                 file.write(normalized + "\n")
                 cache.add(normalized)  # Add immediately so no duplicates if looped again
 
-    return render_template("index.html", results=sorted_results, options=all_options,
-                           sources=sources, keywords=keywords)
+    return render_template("index.html", results=sorted_results,
+                           sources=sources, keywords=keywords, source_groups=source_groups)
 
 
 if __name__ == "__main__":
