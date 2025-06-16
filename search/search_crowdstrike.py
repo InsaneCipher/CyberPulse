@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import feedparser
+import re
 from search.contains_keyword import contains_keyword
 from search.check_cache import check_cache
-import re
-from datetime import datetime
+from search.format_date import format_date
 
 
 def search_crowdstrike(keyword, source, results, seen_links, url_blacklist):
@@ -22,13 +22,9 @@ def search_crowdstrike(keyword, source, results, seen_links, url_blacklist):
         publish_date = entry.get("published", entry.get("updated", "Unknown Date"))
         publish_date = re.sub(r'-', ' -', publish_date)
 
-        # CrowdStrike uses a date format like: 'Tue, 11 Jun 2024 15:00:00 +0000'
-        # so this should work for parsing:
-        if publish_date != "Unknown Date":
-            dt = datetime.strptime(publish_date, "%b %d, %Y %H:%M:%S %z")
-            epoch_time = int(dt.timestamp())
-        else:
-            epoch_time = 0
+        date_array = format_date(publish_date)
+        publish_date = date_array[0]
+        epoch_time = date_array[1]
 
         first_p = check_cache(full_url)
 

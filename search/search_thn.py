@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import feedparser
 from search.contains_keyword import contains_keyword
 from search.check_cache import check_cache
-from datetime import datetime
+from search.format_date import format_date
 
 
 def search_thn(keyword, source, results, seen_links, url_blacklist):
@@ -18,14 +18,10 @@ def search_thn(keyword, source, results, seen_links, url_blacklist):
         title = entry.title
         full_url = entry.link
         first_p = check_cache(full_url)
-        publish_date = entry.get("published", entry.get("updated", "Unknown Date"))
 
-        # Convert to UTC and get epoch time
-        if publish_date != "Unknown Date":
-            dt = datetime.strptime(publish_date, "%a, %d %b %Y %H:%M:%S %z")
-            epoch_time = int(dt.timestamp())
-        else:
-            epoch_time = 0
+        date_array = format_date(entry.get("published", entry.get("updated", "Unknown Date")))
+        publish_date = date_array[0]
+        epoch_time = date_array[1]
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":

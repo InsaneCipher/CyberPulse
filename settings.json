@@ -1,15 +1,6 @@
 {
     "sources": [
-        "BBC",
-        "CNN",
-        "Krebs",
-        "TheHackerNews",
-        "CyberScoop",
-        "SecurityWeek",
-        "Microsoft",
-        "Threatpost",
-        "CISA",
-        "CrowdStrike"
+        "GoogleCloudBlog"
     ],
     "last_search": "*"
 }

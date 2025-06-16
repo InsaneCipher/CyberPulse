@@ -13,10 +13,14 @@ from search.search_microsoft import search_microsoft
 from search.search_threatpost import search_threatpost
 from search.search_cisa import search_cisa
 from search.search_crowdstrike import search_crowdstrike
+from search.search_cloudblog import search_cloudblog
+from search.search_exploit_db import search_exploit_db
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
-all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost', 'CISA', 'CrowdStrike']
+all_options = ['BBC', 'CNN', 'Krebs', 'TheHackerNews', 'CyberScoop', 'SecurityWeek', 'Microsoft', 'Threatpost',
+               'CISA', 'CrowdStrike', 'GoogleCloudBlog', 'ExploitDB']
+
 with open("blacklist.txt", "r", encoding="utf-8") as f:
     url_blacklist = f.read().split("\n")
 
@@ -63,6 +67,12 @@ def run_search(keyword, source, results, seen_links):
 
     if "CrowdStrike" in source:
         results = search_crowdstrike(keyword, source, results, seen_links, url_blacklist)
+
+    if "GoogleCloudBlog" in source:
+        results = search_cloudblog(keyword, "Google Cloud Blog", results, seen_links, url_blacklist)
+
+    if "ExploitDB" in source:
+        results = search_exploit_db(keyword, source, results, seen_links, url_blacklist)
 
     return results
 

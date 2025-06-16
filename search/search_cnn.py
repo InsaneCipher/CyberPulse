@@ -1,12 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import feedparser
-from search.contains_keyword import contains_keyword
-from search.check_cache import check_cache
 import re
-from datetime import datetime
 from zoneinfo import ZoneInfo
 from datetime import datetime
+from search.contains_keyword import contains_keyword
+from search.check_cache import check_cache
+from search.format_date import format_date
 
 
 def search_cnn(keyword, source, results, seen_links, url_blacklist):
@@ -31,12 +31,9 @@ def search_cnn(keyword, source, results, seen_links, url_blacklist):
             else:
                 publish_date = "Unknown Date"
 
-            # Convert to UTC and get epoch time
-            if publish_date != "Unknown Date":
-                dt = datetime.strptime(publish_date, "%a, %d %b %Y %H:%M:%S %z")
-                epoch_time = int(dt.timestamp())
-            else:
-                epoch_time = 0
+            date_array = format_date(publish_date)
+            publish_date = date_array[0]
+            epoch_time = date_array[1]
 
             summary = ""
             try:
