@@ -18,15 +18,38 @@ from search.search_exploit_db import search_exploit_db
 from search.search_sans import search_sans
 from search.search_cisco import search_cisco
 from search.search_aws import search_aws
+from search.search_zdi_upcoming import search_zdi_upcoming
+from search.search_zdi_published import search_zdi_published
+from search.search_zdi import search_zdi
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
 
 source_groups = {
     "Mainstream News": ["BBC", "CNN"],
-    "Cybersecurity Blogs": ["The Hacker News", "Threatpost", "Security Week", "CyberScoop", "Krebs On Security"],
+    "Cybersecurity Blogs": ["The Hacker News", "Threatpost", "Security Week", "CyberScoop", "Krebs On Security",
+                            "Zero Day Initiative Blog"],
     "Vendors & Feeds": ["US-CERT (CISA)", "CrowdStrike", "Microsoft Security", "Google Cloud", "AWS Security",
-                        "ExploitDB", "Cisco Talos Intelligence", "SANS Internet Storm Center"]
+                        "ExploitDB", "Cisco Talos Intelligence", "SANS Internet Storm Center",
+                        "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published"]
+}
+
+source_groups = {
+    "Mainstream News": ["BBC", "CNN"],
+    "Cybersecurity Blogs": [
+        "The Hacker News", "Threatpost", "Security Week", "CyberScoop",
+        "Krebs On Security", "Zero Day Initiative Blog",
+        "DarkReading", "Bleeping Computer", "Security Affairs", "The Record"
+    ],
+    "Vendors & Feeds": [
+        "US-CERT (CISA)", "CrowdStrike", "Microsoft Security", "Google Cloud",
+        "AWS Security", "ExploitDB", "Cisco Talos Intelligence",
+        "SANS Internet Storm Center", "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
+        "Mandiant", "Rapid7", "AlienVault", "NCSC (UK)"
+    ],
+    "Community & Aggregators": [
+        "Reddit r/netsec", "Substack – Risky Biz", "Twitter Threat Feeds"
+    ]
 }
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:
@@ -90,6 +113,15 @@ def run_search(keyword, source, results, seen_links):
 
     if "AWS Security" in source:
         results = search_aws(keyword, source, results, seen_links, url_blacklist)
+
+    if "Zero Day Initiative: Upcoming" in source:
+        results = search_zdi_upcoming(keyword, source, results, seen_links, url_blacklist)
+
+    if "Zero Day Initiative: Published" in source:
+        results = search_zdi_published(keyword, source, results, seen_links, url_blacklist)
+
+    if "Zero Day Initiative Blog" in source:
+        results = search_zdi(keyword, source, results, seen_links, url_blacklist)
 
     return results
 
