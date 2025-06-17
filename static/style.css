@@ -51,6 +51,42 @@ h1 {
     background: #333;
 }
 
+
+/* Main container spacing */
+.source-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* Each category group */
+.source-group {
+  margin-bottom: 1rem;
+}
+
+/* Grid layout for checkboxes */
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Style for label + checkbox */
+.source-grid label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Change style when the checkbox is checked */
+label:has(input[type="checkbox"]:checked) {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
 button {
     padding: 0.8em;
     font-size: 1em;
@@ -108,32 +144,4 @@ button:hover {
 
 .article-card a:hover {
     text-decoration: underline;
-}
-
-/* Main container spacing */
-.source-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-/* Each category group */
-.source-group {
-  margin-bottom: 1rem;
-}
-
-/* Grid layout for checkboxes */
-.source-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
-}
-
-/* Style for label + checkbox */
-.source-grid label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  cursor: pointer;
 }

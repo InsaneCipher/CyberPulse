@@ -5,13 +5,6 @@
     <title>News Keyword Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
-        const prettyNames = {
-      "TheHackerNews": "The Hacker News",
-      "GoogleCloudBlog": "Google Cloud",
-      // fallback to key if not found
-    };
-    </script>
-    <script>
 
 
         function checkInput() {
@@ -37,6 +30,7 @@
 <body>
     <div class="container">
         <h1>📰 NewsFinder</h1>
+        <p>90–95% coverage of publicly available, high-signal cybersecurity news sources</p>
 
         <form action="/search" method="POST" class="search-form">
             <input type="text" id="textInput" oninput="checkInput()" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." value="{{ keywords }}" required>

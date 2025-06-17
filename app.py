@@ -21,31 +21,34 @@ from search.search_aws import search_aws
 from search.search_zdi_upcoming import search_zdi_upcoming
 from search.search_zdi_published import search_zdi_published
 from search.search_zdi import search_zdi
+from search.search_dark_reading import search_dark_reading
+from search.search_bleeping_computer import search_bleeping_computer
+from search.search_the_record import search_the_record
+from search.search_security_affairs import search_security_affairs
+from search.search_ncsc import search_ncsc
+from search.search_europol import search_europol
+from search.search_fbi import search_fbi
+from search.search_rapid7 import search_rapid7
+from search.search_wired import search_wired
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
 
 source_groups = {
-    "Mainstream News": ["BBC", "CNN"],
-    "Cybersecurity Blogs": ["The Hacker News", "Threatpost", "Security Week", "CyberScoop", "Krebs On Security",
-                            "Zero Day Initiative Blog"],
-    "Vendors & Feeds": ["US-CERT (CISA)", "CrowdStrike", "Microsoft Security", "Google Cloud", "AWS Security",
-                        "ExploitDB", "Cisco Talos Intelligence", "SANS Internet Storm Center",
-                        "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published"]
-}
-
-source_groups = {
-    "Mainstream News": ["BBC", "CNN"],
+    "Mainstream News": ["BBC", "CNN", "Wired"],
     "Cybersecurity Blogs": [
         "The Hacker News", "Threatpost", "Security Week", "CyberScoop",
         "Krebs On Security", "Zero Day Initiative Blog",
-        "DarkReading", "Bleeping Computer", "Security Affairs", "The Record"
+        "DarkReading", "BleepingComputer", "Security Affairs", "The Record"
     ],
     "Vendors & Feeds": [
-        "US-CERT (CISA)", "CrowdStrike", "Microsoft Security", "Google Cloud",
+        "CrowdStrike", "Microsoft Security", "Google Cloud",
         "AWS Security", "ExploitDB", "Cisco Talos Intelligence",
         "SANS Internet Storm Center", "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
-        "Mandiant", "Rapid7", "AlienVault", "NCSC (UK)"
+        "Rapid7"
+    ],
+    "Government & Law Enforcement": [
+        "FBI Newsroom", "Europol Newsroom", "NCSC (UK)", "US-CERT (CISA), ACSC (Australia)"
     ],
     "Community & Aggregators": [
         "Reddit r/netsec", "Substack – Risky Biz", "Twitter Threat Feeds"
@@ -122,6 +125,33 @@ def run_search(keyword, source, results, seen_links):
 
     if "Zero Day Initiative Blog" in source:
         results = search_zdi(keyword, source, results, seen_links, url_blacklist)
+
+    if "The Record" in source:
+        results = search_the_record(keyword, source, results, seen_links, url_blacklist)
+
+    if "Bleeping Computer" in source:
+        results = search_bleeping_computer(keyword, source, results, seen_links, url_blacklist)
+
+    if "DarkReading" in source:
+        results = search_dark_reading(keyword, source, results, seen_links, url_blacklist)
+
+    if "Security Affairs" in source:
+        results = search_security_affairs(keyword, source, results, seen_links, url_blacklist)
+
+    if "FBI Newsroom" in source:
+        results = search_fbi(keyword, source, results, seen_links, url_blacklist)
+
+    if "Europol Newsroom" in source:
+        results = search_europol(keyword, source, results, seen_links, url_blacklist)
+
+    if "NCSC (UK)" in source:
+        results = search_ncsc(keyword, source, results, seen_links, url_blacklist)
+
+    if "Wired" in source:
+        results = search_wired(keyword, source, results, seen_links, url_blacklist)
+
+    if "Rapid7" in source:
+        results = search_rapid7(keyword, source, results, seen_links, url_blacklist)
 
     return results
 

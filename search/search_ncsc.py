@@ -6,11 +6,11 @@ from search.check_cache import check_cache
 from search.format_date import format_date
 
 
-def search_cisa(keyword, source, results, seen_links, url_blacklist):
+def search_ncsc(keyword, source, results, seen_links, url_blacklist):
     if source not in results:
         results[source] = []
 
-    rss_url = "https://us-cert.cisa.gov/ncas/alerts.xml"
+    rss_url = "https://www.ncsc.gov.uk/api/1/services/v1/news-rss-feed.xml"
     feed = feedparser.parse(rss_url)
 
     matched = []

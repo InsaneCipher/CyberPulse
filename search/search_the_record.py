@@ -6,11 +6,11 @@ from search.check_cache import check_cache
 from search.format_date import format_date
 
 
-def search_cisa(keyword, source, results, seen_links, url_blacklist):
+def search_the_record(keyword, source, results, seen_links, url_blacklist):
     if source not in results:
         results[source] = []
 
-    rss_url = "https://us-cert.cisa.gov/ncas/alerts.xml"
+    rss_url = "https://therecord.media/feed"
     feed = feedparser.parse(rss_url)
 
     matched = []
@@ -21,17 +21,14 @@ def search_cisa(keyword, source, results, seen_links, url_blacklist):
         publish_date = date_array[0]
         epoch_time = date_array[1]
 
-        try:
-            soup = BeautifulSoup(entry.summary, 'html.parser')
-            paragraphs = soup.find_all('p')
+        soup = BeautifulSoup(entry.summary, 'html.parser')
+        paragraphs = soup.find_all('p')
 
-            # Combine the first few paragraphs into a single string (adjust number as needed)
-            if paragraphs:
-                first_p = "\n\n".join(p.get_text() for p in paragraphs[1:2])
-            else:
-                first_p = soup.get_text(strip=True)[:500]  # fallback to raw text if no <p> tags
-        except AttributeError:
-            first_p = "No Summary Available"
+        # Combine the first few paragraphs into a single string (adjust number as needed)
+        if paragraphs:
+            first_p = "\n\n".join(p.get_text() for p in paragraphs[1:2])
+        else:
+            first_p = soup.get_text(strip=True)[:500]  # fallback to raw text if no <p> tags
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
