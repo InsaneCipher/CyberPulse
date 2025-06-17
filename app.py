@@ -30,6 +30,15 @@ from search.search_europol import search_europol
 from search.search_fbi import search_fbi
 from search.search_rapid7 import search_rapid7
 from search.search_wired import search_wired
+from search.search_acsc import search_acsc
+from search.search_kali import search_kali
+from search.search_malwarebytes import search_malwarebytes
+from search.search_palo_alto import search_palo_alto
+from search.search_risky import search_risky
+from search.search_eu_cert import search_eu_cert
+from search.search_google_zero import search_google_zero
+from search.search_japan_cert import search_japan_cert
+
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
@@ -39,19 +48,20 @@ source_groups = {
     "Cybersecurity Blogs": [
         "The Hacker News", "Threatpost", "Security Week", "CyberScoop",
         "Krebs On Security", "Zero Day Initiative Blog",
-        "DarkReading", "BleepingComputer", "Security Affairs", "The Record"
+        "DarkReading", "BleepingComputer", "Security Affairs", "The Record", "Google Project Zero",
+        "Google Cloud Security Blog"
     ],
     "Vendors & Feeds": [
-        "CrowdStrike", "Microsoft Security", "Google Cloud",
+        "CrowdStrike", "Microsoft Security",
         "AWS Security", "ExploitDB", "Cisco Talos Intelligence",
         "SANS Internet Storm Center", "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
-        "Rapid7"
+        "Rapid7", "Malwarebytes", "Kali Linux", "Palo Alto Networks"
     ],
     "Government & Law Enforcement": [
-        "FBI Newsroom", "Europol Newsroom", "NCSC (UK)", "US-CERT (CISA), ACSC (Australia)"
+        "FBI Newsroom", "Europol Newsroom", "NCSC (UK)", "CERT-US (CISA)", "CERT-EU", "CERT-Japan"
     ],
     "Community & Aggregators": [
-        "Reddit r/netsec", "Substack – Risky Biz", "Twitter Threat Feeds"
+        "Substack – Risky Biz"
     ]
 }
 
@@ -96,7 +106,7 @@ def run_search(keyword, source, results, seen_links):
     if "Threatpost" in source:
         results = search_threatpost(keyword, source, results, seen_links, url_blacklist)
 
-    if "US-CERT (CISA)" in source:
+    if "CERT-US (CISA)" in source:
         results = search_cisa(keyword, source, results, seen_links, url_blacklist)
 
     if "CrowdStrike" in source:
@@ -152,6 +162,30 @@ def run_search(keyword, source, results, seen_links):
 
     if "Rapid7" in source:
         results = search_rapid7(keyword, source, results, seen_links, url_blacklist)
+
+    if "Palo Alto Networks" in source:
+        results = search_palo_alto(keyword, source, results, seen_links, url_blacklist)
+
+    if "Kali Linux" in source:
+        results = search_kali(keyword, source, results, seen_links, url_blacklist)
+
+    if "ACSC (Australia)" in source:
+        results = search_acsc(keyword, source, results, seen_links, url_blacklist)
+
+    if "Malwarebytes" in source:
+        results = search_malwarebytes(keyword, source, results, seen_links, url_blacklist)
+
+    if "Substack – Risky Biz" in source:
+        results = search_risky(keyword, source, results, seen_links, url_blacklist)
+
+    if "CERT-EU" in source:
+        results = search_eu_cert(keyword, source, results, seen_links, url_blacklist)
+
+    if "CERT-Japan" in source:
+        results = search_japan_cert(keyword, source, results, seen_links, url_blacklist)
+
+    if "Google Project Zero" in source:
+        results = search_google_zero(keyword, source, results, seen_links, url_blacklist)
 
     return results
 
