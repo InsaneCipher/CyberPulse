@@ -30,7 +30,6 @@ from search.search_europol import search_europol
 from search.search_fbi import search_fbi
 from search.search_rapid7 import search_rapid7
 from search.search_wired import search_wired
-from search.search_acsc import search_acsc
 from search.search_kali import search_kali
 from search.search_malwarebytes import search_malwarebytes
 from search.search_palo_alto import search_palo_alto
@@ -38,6 +37,14 @@ from search.search_risky import search_risky
 from search.search_eu_cert import search_eu_cert
 from search.search_google_zero import search_google_zero
 from search.search_japan_cert import search_japan_cert
+from search.search_daily_swig import search_daily_swig
+from search.search_darknet_diaries import search_darknet_diaries
+from search.search_fortinet import search_fortinet
+from search.search_vmware import search_vmware
+from search.search_research_checkpoint import search_research_checkpoint
+from search.search_security_boulevard import search_security_boulevard
+from search.search_schneier import search_schneier
+from search.search_ibm import search_ibm
 
 
 app = Flask(__name__)
@@ -45,24 +52,77 @@ app.secret_key = 'news-search'  # required for sessions
 
 source_groups = {
     "Mainstream News": ["BBC", "CNN", "Wired"],
+
     "Cybersecurity Blogs": [
         "The Hacker News", "Threatpost", "Security Week", "CyberScoop",
         "Krebs On Security", "Zero Day Initiative Blog",
-        "DarkReading", "BleepingComputer", "Security Affairs", "The Record", "Google Project Zero",
-        "Google Cloud Security Blog"
+        "DarkReading", "BleepingComputer", "Security Affairs", "The Record",
+        "Google Project Zero", "Google Cloud Security Blog",
+        "Security Boulevard", "The Daily Swig", "Schneier"
     ],
+
     "Vendors & Feeds": [
         "CrowdStrike", "Microsoft Security",
         "AWS Security", "ExploitDB", "Cisco Talos Intelligence",
         "SANS Internet Storm Center", "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
-        "Rapid7", "Malwarebytes", "Kali Linux", "Palo Alto Networks"
+        "Rapid7", "Malwarebytes", "Kali Linux", "Palo Alto Networks",
+        "Check Point Research Blog", "Fortinet Blog", "VMware Security Blog",
+        "IBM X‑Force"
     ],
+
     "Government & Law Enforcement": [
-        "FBI Newsroom", "Europol Newsroom", "NCSC (UK)", "CERT-US (CISA)", "CERT-EU", "CERT-Japan"
+        "FBI Newsroom", "Europol Newsroom", "NCSC (UK)",
+        "CERT-US (CISA)", "CERT-EU", "CERT-Japan"
     ],
+
     "Community & Aggregators": [
-        "Substack – Risky Biz"
+        "Substack – Risky Biz", "Darknet Diaries"
     ]
+}
+
+source_function_map = {
+    "BBC": search_bbc,
+    "CNN": search_cnn,
+    "Krebs On Security": search_krebs,
+    "The Hacker News": search_thn,
+    "CyberScoop": search_cyberscoop,
+    "Security Week": search_securityweek,
+    "Microsoft Security": search_microsoft,
+    "Threatpost": search_threatpost,
+    "CERT-US (CISA)": search_cisa,
+    "CrowdStrike": search_crowdstrike,
+    "Google Cloud": search_cloudblog,
+    "ExploitDB": search_exploit_db,
+    "SANS Internet Storm Center": search_sans,
+    "Cisco Talos Intelligence": search_cisco,
+    "AWS Security": search_aws,
+    "Zero Day Initiative: Upcoming": search_zdi_upcoming,
+    "Zero Day Initiative: Published": search_zdi_published,
+    "Zero Day Initiative Blog": search_zdi,
+    "The Record": search_the_record,
+    "Bleeping Computer": search_bleeping_computer,
+    "DarkReading": search_dark_reading,
+    "Security Affairs": search_security_affairs,
+    "FBI Newsroom": search_fbi,
+    "Europol Newsroom": search_europol,
+    "NCSC (UK)": search_ncsc,
+    "Wired": search_wired,
+    "Rapid7": search_rapid7,
+    "Palo Alto Networks": search_palo_alto,
+    "Kali Linux": search_kali,
+    "Malwarebytes": search_malwarebytes,
+    "Substack – Risky Biz": search_risky,
+    "CERT-EU": search_eu_cert,
+    "CERT-Japan": search_japan_cert,
+    "Google Project Zero": search_google_zero,
+    "The Daily Swig": search_daily_swig,
+    "Darknet Diaries": search_darknet_diaries,
+    "Fortinet Blog": search_fortinet,
+    "Security Boulevard": search_security_boulevard,
+    "VMware Security Blog": search_vmware,
+    "Check Point Research Blog": search_research_checkpoint,
+    "Schneier": search_schneier,
+    "IBM X‑Force": search_ibm
 }
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:
@@ -82,110 +142,9 @@ except FileNotFoundError:
 def run_search(keyword, source, results, seen_links):
     print(f"\nSearching for Word: {keyword} in Source: {source}")
 
-    if "BBC" in source:
-        results = search_bbc(keyword, source, results, seen_links, url_blacklist)
-
-    if "CNN" in source:
-        results = search_cnn(keyword, source, results, seen_links, url_blacklist)
-
-    if "Krebs On Security" in source:
-        results = search_krebs(keyword, source, results, seen_links, url_blacklist)
-
-    if "The Hacker News" in source:
-        results = search_thn(keyword, source, results, seen_links, url_blacklist)
-
-    if "CyberScoop" in source:
-        results = search_cyberscoop(keyword, source, results, seen_links, url_blacklist)
-
-    if "Security Week" in source:
-        results = search_securityweek(keyword, source, results, seen_links, url_blacklist)
-
-    if "Microsoft Security" in source:
-        results = search_microsoft(keyword, source, results, seen_links, url_blacklist)
-
-    if "Threatpost" in source:
-        results = search_threatpost(keyword, source, results, seen_links, url_blacklist)
-
-    if "CERT-US (CISA)" in source:
-        results = search_cisa(keyword, source, results, seen_links, url_blacklist)
-
-    if "CrowdStrike" in source:
-        results = search_crowdstrike(keyword, source, results, seen_links, url_blacklist)
-
-    if "Google Cloud" in source:
-        results = search_cloudblog(keyword, source, results, seen_links, url_blacklist)
-
-    if "ExploitDB" in source:
-        results = search_exploit_db(keyword, source, results, seen_links, url_blacklist)
-
-    if "SANS Internet Storm Center" in source:
-        results = search_sans(keyword, source, results, seen_links, url_blacklist)
-
-    if "Cisco Talos Intelligence" in source:
-        results = search_cisco(keyword, source, results, seen_links, url_blacklist)
-
-    if "AWS Security" in source:
-        results = search_aws(keyword, source, results, seen_links, url_blacklist)
-
-    if "Zero Day Initiative: Upcoming" in source:
-        results = search_zdi_upcoming(keyword, source, results, seen_links, url_blacklist)
-
-    if "Zero Day Initiative: Published" in source:
-        results = search_zdi_published(keyword, source, results, seen_links, url_blacklist)
-
-    if "Zero Day Initiative Blog" in source:
-        results = search_zdi(keyword, source, results, seen_links, url_blacklist)
-
-    if "The Record" in source:
-        results = search_the_record(keyword, source, results, seen_links, url_blacklist)
-
-    if "Bleeping Computer" in source:
-        results = search_bleeping_computer(keyword, source, results, seen_links, url_blacklist)
-
-    if "DarkReading" in source:
-        results = search_dark_reading(keyword, source, results, seen_links, url_blacklist)
-
-    if "Security Affairs" in source:
-        results = search_security_affairs(keyword, source, results, seen_links, url_blacklist)
-
-    if "FBI Newsroom" in source:
-        results = search_fbi(keyword, source, results, seen_links, url_blacklist)
-
-    if "Europol Newsroom" in source:
-        results = search_europol(keyword, source, results, seen_links, url_blacklist)
-
-    if "NCSC (UK)" in source:
-        results = search_ncsc(keyword, source, results, seen_links, url_blacklist)
-
-    if "Wired" in source:
-        results = search_wired(keyword, source, results, seen_links, url_blacklist)
-
-    if "Rapid7" in source:
-        results = search_rapid7(keyword, source, results, seen_links, url_blacklist)
-
-    if "Palo Alto Networks" in source:
-        results = search_palo_alto(keyword, source, results, seen_links, url_blacklist)
-
-    if "Kali Linux" in source:
-        results = search_kali(keyword, source, results, seen_links, url_blacklist)
-
-    if "ACSC (Australia)" in source:
-        results = search_acsc(keyword, source, results, seen_links, url_blacklist)
-
-    if "Malwarebytes" in source:
-        results = search_malwarebytes(keyword, source, results, seen_links, url_blacklist)
-
-    if "Substack – Risky Biz" in source:
-        results = search_risky(keyword, source, results, seen_links, url_blacklist)
-
-    if "CERT-EU" in source:
-        results = search_eu_cert(keyword, source, results, seen_links, url_blacklist)
-
-    if "CERT-Japan" in source:
-        results = search_japan_cert(keyword, source, results, seen_links, url_blacklist)
-
-    if "Google Project Zero" in source:
-        results = search_google_zero(keyword, source, results, seen_links, url_blacklist)
+    for source_key, search_func in source_function_map.items():
+        if source_key in source:
+            return search_func(keyword, source, results, seen_links, url_blacklist)
 
     return results
 
