@@ -49,15 +49,15 @@ from search.search_ncc import search_ncc
 from search.search_trustedsec import search_trustedsec
 from search.search_eset import search_eset
 from search.search_kaspersky import search_kaspersky
-
-
+from search.search_arstechnica import search_arstechnica
+from search.search_realmode import search_realmode
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
 
 source_groups = {
     "Mainstream News": [
-        "BBC", "CNN", "Wired"
+        "BBC", "CNN", "Wired", "Ars Technica"
     ],
 
     "Cybersecurity Blogs": [
@@ -66,8 +66,7 @@ source_groups = {
         "Bleeping Computer", "Security Affairs", "The Record",
         "Google Project Zero", "Google Cloud Security Blog",
         "Security Boulevard", "The Daily Swig", "Schneier",
-        "SpecterOps", "NCC Group Research Blog", "TrustedSec Blog",
-        "Bugcrowd Blog", "NotSoSecure Blog", "Zimperium Blog"
+        "Realmode Labs", "NCC Group Research Blog", "TrustedSec Blog"
     ],
 
     "Vendors & Feeds": [
@@ -135,7 +134,9 @@ source_function_map = {
     "NCC Group Research Blog": search_ncc,
     "TrustedSec Blog": search_trustedsec,
     "ESET WeLiveSecurity": search_eset,
-    "Kaspersky Securelist": search_kaspersky
+    "Kaspersky Securelist": search_kaspersky,
+    "Ars Technica": search_arstechnica,
+    "Realmode Labs": search_realmode
 }
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:

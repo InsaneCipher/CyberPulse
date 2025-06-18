@@ -1,25 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 import feedparser
-import re
 from search.contains_keyword import contains_keyword
 from search.check_cache import check_cache
 from search.format_date import format_date
 
 
-def search_sans(keyword, source, results, seen_links, url_blacklist):
+def search_arstechnica(keyword, source, results, seen_links, url_blacklist):
     if source not in results:
         results[source] = []
 
-    rss_url = "https://isc.sans.edu/rssfeed.xml"
+    rss_url = "https://feeds.arstechnica.com/arstechnica/index/"
     feed = feedparser.parse(rss_url)
 
     matched = []
     for entry in feed.entries:
-        print(entry.keys())
         title = entry.title
-        title = re.sub('&.*;', '', title)
-        title = re.sub('https.*', '', title)
         full_url = entry.link
         date_array = format_date(entry.get("published", entry.get("updated", "Unknown Date")))
         publish_date = date_array[0]
@@ -36,8 +32,6 @@ def search_sans(keyword, source, results, seen_links, url_blacklist):
                 first_p = soup.get_text(strip=True)[:500]  # fallback to raw text if no <p> tags
         except AttributeError:
             first_p = "No Summary Available"
-
-        first_p = re.sub('&.*;', '', first_p)
 
         if full_url not in url_blacklist and full_url not in seen_links:
             if contains_keyword(title, keyword) or keyword.lower() == "*":
