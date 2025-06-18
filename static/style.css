@@ -1,86 +1,102 @@
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #0f0f0f;
-    color: #f1f1f1;
-}
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: #f1f1f1;
+    }
 
 .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2em;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2em;
 }
 
 h1 {
-    text-align: center;
-    color: #ff3c3c;
-    margin-bottom: 1em;
+  text-align: center;
+  color: #ff3c3c;
+  margin-bottom: 0.5em;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 2em;
+  color: #cccccc;
 }
 
 .search-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    background: #1c1c1c;
-    padding: 1.5em;
-    border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  background: #1c1c1c;
+  padding: 2em;
+  border-radius: 10px;
+}
+
+.search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
 }
 
 .search-form input[type="text"] {
-    padding: 0.8em;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    background: #2a2a2a;
-    color: white;
+  flex: 1;
+  padding: 0.8em;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  background: #2a2a2a;
+  color: white;
+}
+
+.source-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1em;
 }
 
 .sources label {
-    background: #292929;
-    padding: 0.5em 0.5em;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  background: #292929;
+  padding: 0.5em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .sources input {
-    margin-right: 0.5em;
+  margin-right: 0.5em;
 }
 
 .sources label:hover {
-    background: #333;
+  background: #333;
 }
 
-
-/* Main container spacing */
 .source-container {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 1.5rem;
 }
 
-/* Each category group */
 .source-group {
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  border-left: 4px solid #ff4d4d;
+  padding-left: 0.5rem;
+  margin-top: 1.5rem;
 }
 
-/* Grid layout for checkboxes */
 .source-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 0.75rem;
 }
 
-/* Style for label + checkbox */
 .source-grid label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  cursor: pointer;
 }
 
-/* Change style when the checkbox is checked */
 label:has(input[type="checkbox"]:checked) {
   background-color: #4caf50;
   color: white;
@@ -88,60 +104,47 @@ label:has(input[type="checkbox"]:checked) {
 }
 
 button {
-    padding: 0.8em;
-    font-size: 1em;
-    background: #ff3c3c;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-/* Style when loading */
-button.loading {
-    padding: 0.8em;
-    font-size: 1em;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    background-color: gray;
-    pointer-events: none;  /* disables clicks */
+  padding: 0.8em 1.5em;
+  font-size: 1em;
+  background: #ff3c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-    background: #e03131;
+  background: #e03131;
+}
+
+button.loading {
+  background-color: gray;
+  pointer-events: none;
 }
 
 .results {
-    margin-top: 2em;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5em;
+  margin-top: 2em;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5em;
 }
 
 .article-card {
-    background: #1a1a1a;
-    padding: 1em 1.5em;
-    border-left: 4px solid #ff3c3c;
-    border-radius: 6px;
-}
-
-.article-card h2 {
-    margin-top: 0;
-    font-size: 1.25em;
+  background: #1a1a1a;
+  padding: 1em 1.5em;
+  border-left: 4px solid #ff3c3c;
+  border-radius: 6px;
 }
 
 .article-card a {
-    color: #ff3c3c;
-    text-decoration: none;
-    font-weight: bold;
-    display: inline-block;
-    margin-top: 0.5em;
+  color: #ff3c3c;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 0.5em;
 }
 
 .article-card a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }

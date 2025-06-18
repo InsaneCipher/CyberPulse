@@ -45,29 +45,38 @@ from search.search_research_checkpoint import search_research_checkpoint
 from search.search_security_boulevard import search_security_boulevard
 from search.search_schneier import search_schneier
 from search.search_ibm import search_ibm
+from search.search_ncc import search_ncc
+from search.search_trustedsec import search_trustedsec
+from search.search_eset import search_eset
+from search.search_kaspersky import search_kaspersky
+
 
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
 
 source_groups = {
-    "Mainstream News": ["BBC", "CNN", "Wired"],
+    "Mainstream News": [
+        "BBC", "CNN", "Wired"
+    ],
 
     "Cybersecurity Blogs": [
         "The Hacker News", "Threatpost", "Security Week", "CyberScoop",
-        "Krebs On Security", "Zero Day Initiative Blog",
-        "DarkReading", "BleepingComputer", "Security Affairs", "The Record",
+        "Krebs On Security", "Zero Day Initiative Blog", "DarkReading",
+        "Bleeping Computer", "Security Affairs", "The Record",
         "Google Project Zero", "Google Cloud Security Blog",
-        "Security Boulevard", "The Daily Swig", "Schneier"
+        "Security Boulevard", "The Daily Swig", "Schneier",
+        "SpecterOps", "NCC Group Research Blog", "TrustedSec Blog",
+        "Bugcrowd Blog", "NotSoSecure Blog", "Zimperium Blog"
     ],
 
     "Vendors & Feeds": [
-        "CrowdStrike", "Microsoft Security",
-        "AWS Security", "ExploitDB", "Cisco Talos Intelligence",
-        "SANS Internet Storm Center", "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
+        "CrowdStrike", "Microsoft Security", "AWS Security", "ExploitDB",
+        "Cisco Talos Intelligence", "SANS Internet Storm Center",
+        "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
         "Rapid7", "Malwarebytes", "Kali Linux", "Palo Alto Networks",
         "Check Point Research Blog", "Fortinet Blog", "VMware Security Blog",
-        "IBM X‑Force"
+        "IBM X‑Force", "Kaspersky Securelist", "ESET WeLiveSecurity"
     ],
 
     "Government & Law Enforcement": [
@@ -122,7 +131,11 @@ source_function_map = {
     "VMware Security Blog": search_vmware,
     "Check Point Research Blog": search_research_checkpoint,
     "Schneier": search_schneier,
-    "IBM X‑Force": search_ibm
+    "IBM X‑Force": search_ibm,
+    "NCC Group Research Blog": search_ncc,
+    "TrustedSec Blog": search_trustedsec,
+    "ESET WeLiveSecurity": search_eset,
+    "Kaspersky Securelist": search_kaspersky
 }
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:
@@ -221,7 +234,8 @@ def search():
                 cache.add(normalized)  # Add immediately so no duplicates if looped again
 
     return render_template("index.html", results=sorted_results,
-                           sources=sources, keywords=keywords, source_groups=source_groups)
+                           sources=sources, keywords=keywords, source_groups=source_groups,
+                           source_count=str(len(sorted_results)))
 
 
 if __name__ == "__main__":

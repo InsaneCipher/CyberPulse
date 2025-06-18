@@ -1,101 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>News Keyword Finder</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script>
+  <meta charset="UTF-8">
+  <title>NewsFinder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    function checkInput() {
+      const input = document.getElementById("textInput");
+      const button = document.getElementById("search-button");
+      button.disabled = input.value.trim() === "";
+    }
 
+    function toggleAll() {
+      const checkboxes = document.querySelectorAll(`input[type=checkbox]`);
+      const allChecked = [...checkboxes].every(cb => cb.checked);
+      checkboxes.forEach(cb => cb.checked = !allChecked);
+    }
 
-        function checkInput() {
-              const input = document.getElementById("textInput");
-              const button = document.getElementById("search-button");
-              button.disabled = input.value.trim() === "";
-        }
-    </script>
-
-    <script>
-        function checkCheckboxes() {
-              const checkboxes = document.querySelectorAll('input[name="sources"]');
-              const submitBtn = document.getElementById("search-button");
-
-              // Check if any checkbox is checked
-              const oneChecked = Array.from(checkboxes).some(chk => chk.checked);
-
-              // Enable button if at least one is checked
-              submitBtn.disabled = !oneChecked;
-        }
-    </script>
+    function checkCheckboxes() {
+      const checkboxes = document.querySelectorAll('input[name="sources"]');
+      const submitBtn = document.getElementById("search-button");
+      const oneChecked = Array.from(checkboxes).some(chk => chk.checked);
+      submitBtn.disabled = !oneChecked;
+    }
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h1>📰 NewsFinder</h1>
-        <p>90–95% coverage of publicly available, high-signal cybersecurity news sources</p>
+  <div class="container">
+    <h1>📰 CyberPulse</h1>
+    <p class="subtitle">Track the world's most important cyber threats in one place.</p>
 
-        <form action="/search" method="POST" class="search-form">
-            <input type="text" id="textInput" oninput="checkInput()" name="keyword" placeholder="Enter keyword(s) seperated by spaces..." value="{{ keywords }}" required>
-            <details>
-              <summary>How to use the search</summary>
-              <p>
-                Enter your search keywords separated by spaces.<br>
-                Use <code>*</code> to get <strong>all results</strong> without filtering by keyword.
-              </p>
-            </details>
+    <form action="/search" method="POST" class="search-form">
+      <div class="search-input-row">
+        <input type="text" id="textInput" oninput="checkInput()" name="keyword" placeholder="e.g. attack AI or malware finance" value="{{ keywords }}" required>
+        <button type="button" onclick="toggleAll()">Toggle All Sources</button>
+      </div>
 
-            <div class="source-container sources">
-              {% for category, source_names in source_groups.items() %}
-              <div>
-                <h3 class="source-group">{{ category }}</h3>
-                <div class="source-grid">
-                  {% for source in source_names %}
-                  <label>
-                      <input type="checkbox" name="sources" value="{{ source }}" onchange="checkCheckboxes()" {% if source in sources %}checked{% endif %}> {{ source }}
-                  </label>
-                  {% endfor %}
-                </div>
-              </div>
-              {% endfor %}
-            </div>
+      <p>
+        Enter your search keywords separated by spaces.<br>
+        Use <code>*</code> to get <strong>all results</strong> without filtering by keyword.
+      </p>
 
+      <div class="source-container sources">
+        {% for category, source_names in source_groups.items() %}
+        <div>
+          <h3 class="source-group">{{ category }}</h3>
+          <div class="source-grid">
+            {% for source in source_names %}
+            <label>
+              <input type="checkbox" name="sources" value="{{ source }}" onchange="checkCheckboxes()" {% if source in sources %}checked{% endif %}> {{ source }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
 
-            <button id="search-button" type="submit" disabled>Search</button>
-            <div id="loading" style="display:none;">Searching, please wait...</div>
-        </form>
+      <button id="search-button" type="submit" disabled>Search</button>
+      <div id="loading" style="display:none;">Searching, please wait...</div>
 
-        {% if results %}
-            <div class="results">
-                {% for article in results %}
-                    <div class="article-card">
-                        <h2>{{ article.title }}</h2>
-                        <p>{{ article.date }}</p>
-                        <p>{{ article.snippet }}</p>
-                        <a href="{{ article.url }}" target="_blank">Read more →</a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+      {% if source_count %}
+      <h3>Found {{ source_count }} results matching your keywords.</h3>
+      {% endif %}
+    </form>
+
+    {% if results %}
+    <div class="results">
+      {% for article in results %}
+      <div class="article-card">
+        <h2>{{ article.title }}</h2>
+        <p>{{ article.date }}</p>
+        <p>{{ article.snippet }}</p>
+        <a href="{{ article.url }}" target="_blank">Read more →</a>
+      </div>
+      {% endfor %}
     </div>
+    {% endif %}
+  </div>
 
-<script>
+  <script>
     const btn = document.getElementById('search-button');
     const loading = document.getElementById('loading');
-
     btn.addEventListener('click', async () => {
-        btn.classList.add('loading');  // Change button style
-        loading.style.display = 'block'; // Show loading message
-
-        // Simulate long process (replace with your real async call)
-        await new Promise(resolve => setTimeout(resolve, 600000));
-
-        btn.classList.remove('loading');  // Revert button style
-        loading.style.display = 'none';   // Hide loading message
+      btn.classList.add('loading');
+      loading.style.display = 'block';
+      await new Promise(resolve => setTimeout(resolve, 600000));
+      btn.classList.remove('loading');
+      loading.style.display = 'none';
     });
-</script>
 
-<script>
     window.addEventListener('DOMContentLoaded', () => {
-        checkInput();  // ensures button is enabled if value already exists
+      checkInput();
     });
-</script>
+  </script>
 </body>
 </html>
