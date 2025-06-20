@@ -51,6 +51,8 @@ from search.search_eset import search_eset
 from search.search_kaspersky import search_kaspersky
 from search.search_arstechnica import search_arstechnica
 from search.search_realmode import search_realmode
+from search.search_portswigger import search_portswigger
+from search.search_mozilla import search_mozilla
 
 app = Flask(__name__)
 app.secret_key = 'news-search'  # required for sessions
@@ -66,7 +68,8 @@ source_groups = {
         "Bleeping Computer", "Security Affairs", "The Record",
         "Google Project Zero", "Google Cloud Security Blog",
         "Security Boulevard", "The Daily Swig", "Schneier",
-        "Realmode Labs", "NCC Group Research Blog", "TrustedSec Blog"
+        "Realmode Labs", "NCC Group Research Blog", "TrustedSec Blog",
+        "PortSwigger Research"
     ],
 
     "Vendors & Feeds": [
@@ -75,7 +78,8 @@ source_groups = {
         "Zero Day Initiative: Upcoming", "Zero Day Initiative: Published",
         "Rapid7", "Malwarebytes", "Kali Linux", "Palo Alto Networks",
         "Check Point Research Blog", "Fortinet Blog", "VMware Security Blog",
-        "IBM X‑Force", "Kaspersky Securelist", "ESET WeLiveSecurity"
+        "IBM X‑Force", "Kaspersky Securelist", "ESET WeLiveSecurity",
+        "Mozilla Security Blog"
     ],
 
     "Government & Law Enforcement": [
@@ -136,7 +140,9 @@ source_function_map = {
     "ESET WeLiveSecurity": search_eset,
     "Kaspersky Securelist": search_kaspersky,
     "Ars Technica": search_arstechnica,
-    "Realmode Labs": search_realmode
+    "Realmode Labs": search_realmode,
+    "PortSwigger Research": search_portswigger,
+    "Mozilla Labs": search_mozilla
 }
 
 with open("blacklist.txt", "r", encoding="utf-8") as f:
