@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, session
 import threading
 import webview
 import json
+from dotenv import load_dotenv
+import os
 from concurrent.futures import ThreadPoolExecutor
 from search.search_cnn import search_cnn
 from search.search_bbc import search_bbc
@@ -54,8 +56,9 @@ from search.search_realmode import search_realmode
 from search.search_portswigger import search_portswigger
 from search.search_mozilla import search_mozilla
 
+load_dotenv()
 app = Flask(__name__)
-app.secret_key = 'news-search'  # required for sessions
+app.secret_key = os.getenv("SECRET_KEY")  # required for sessions
 
 source_groups = {
     "Mainstream News": [
@@ -190,7 +193,7 @@ def home():
 
 
 def run_flask():
-    app.run()
+    app.run(debug=False)
 
 
 @app.route("/search", methods=["POST"])
