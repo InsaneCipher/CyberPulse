@@ -193,7 +193,7 @@ def home():
 
 
 def run_flask():
-    app.run(debug=False)
+    app.run(debug=False, host="0.0.0.0", port=5000)
 
 
 @app.route("/search", methods=["POST"])
@@ -249,7 +249,10 @@ def search():
 
 
 if __name__ == "__main__":
-    threading.Thread(target=run_flask, daemon=True).start()
+    """threading.Thread(target=run_flask, daemon=True).start()
     webview.create_window("NewsFinder", "http://127.0.0.1:5000/")
     # Add a simple back button (native GUI button)
     webview.start()
+
+    """
+    run_flask()
