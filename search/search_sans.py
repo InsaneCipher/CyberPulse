@@ -16,7 +16,6 @@ def search_sans(keyword, source, results, seen_links, url_blacklist):
 
     matched = []
     for entry in feed.entries:
-        print(entry.keys())
         title = entry.title
         title = re.sub('&.*;', '', title)
         title = re.sub('https.*', '', title)

@@ -4,6 +4,7 @@ import webview
 import json
 from dotenv import load_dotenv
 import os
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 from search.search_cnn import search_cnn
 from search.search_bbc import search_bbc
@@ -249,10 +250,14 @@ def search():
 
 
 if __name__ == "__main__":
-    """threading.Thread(target=run_flask, daemon=True).start()
-    webview.create_window("NewsFinder", "http://127.0.0.1:5000/")
-    # Add a simple back button (native GUI button)
-    webview.start()
+    parser = argparse.ArgumentParser(description="NewsFinder App")
+    parser.add_argument('--nogui', action='store_true', help='Run without GUI (CLI mode)')
+    args = parser.parse_args()
 
-    """
-    run_flask()
+    if args.nogui:
+        run_flask()
+    else:
+        threading.Thread(target=run_flask, daemon=True).start()
+        webview.create_window("CyberScope", "http://127.0.0.1:5000/")
+        webview.start()
+

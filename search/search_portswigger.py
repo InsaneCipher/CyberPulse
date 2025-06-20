@@ -25,7 +25,6 @@ def search_portswigger(keyword, source, results, seen_links, url_blacklist):
         try:
             soup = BeautifulSoup(entry.summary, 'html.parser')
             paragraphs = soup.find_all('p')
-            print(soup)
 
             # Combine the first few paragraphs into a single string (adjust number as needed)
             if paragraphs:
