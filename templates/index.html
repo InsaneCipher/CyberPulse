@@ -15,6 +15,7 @@
       const checkboxes = document.querySelectorAll(`input[type=checkbox]`);
       const allChecked = [...checkboxes].every(cb => cb.checked);
       checkboxes.forEach(cb => cb.checked = !allChecked);
+      checkInput()
     }
 
     function checkCheckboxes() {

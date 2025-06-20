@@ -5,3 +5,5 @@ feedparser~=6.0.11
 beautifulsoup4~=4.12.3
 regex~=2023.12.25
 ttkbootstrap~=1.13.10
+python-dotenv~=1.1.0
+bs4~=0.0.2
