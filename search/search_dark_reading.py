@@ -7,6 +7,7 @@ from search.format_date import format_date
 
 
 def search_dark_reading(keyword, source, results, seen_links, url_blacklist):
+    print(keyword)
     if source not in results:
         results[source] = []
 
@@ -34,7 +35,7 @@ def search_dark_reading(keyword, source, results, seen_links, url_blacklist):
             first_p = "No Summary Available"
 
         if full_url not in url_blacklist and full_url not in seen_links:
-            if contains_keyword(title, keyword) or keyword.lower() == "*":
+            if contains_keyword(title, keyword) or keyword == "*":
                 seen_links.add(full_url)
                 matched.append((title, full_url, first_p, publish_date, epoch_time))
 

@@ -179,7 +179,7 @@ def news_search(keywords, source):
 
     # Launch all keyword searches in parallel
     with ThreadPoolExecutor(max_workers=min(8, len(keywords.split()))) as executor:
-        futures = [executor.submit(run_search, keyword, source, results, seen_links) for keyword in keywords.split()]
+        futures = [executor.submit(run_search, keyword, source, results, seen_links) for keyword in keywords.split(",")]
         for future in futures:
             future.result()  # Wait for all to complete (and catch exceptions if needed)
 

@@ -38,7 +38,7 @@
       </div>
 
       <p>
-        Enter your search keywords separated by spaces.<br>
+        Enter your search keywords separated by commas.<br>
         Use <code>*</code> to get <strong>all results</strong> without filtering by keyword.
       </p>
 
@@ -136,7 +136,8 @@
       <div id="loading" style="display:none;">Searching, please wait...</div>
 
       {% if source_count %}
-      <h3>Found {{ source_count }} results matching your keywords.</h3>
+      <h3 style="margin-bottom: 0">Found {{ source_count }} results matching your keywords:</h3>
+      <p style="margin-top: 0; padding-top: 0">{{ keywords }}</p>
       {% endif %}
     </form>
 
