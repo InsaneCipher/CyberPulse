@@ -5,6 +5,11 @@ body {
       color: #f1f1f1;
     }
 
+a {
+  color: #f1f1f1;
+  text-decoration: none;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;

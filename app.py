@@ -258,6 +258,7 @@ if __name__ == "__main__":
         run_flask()
     else:
         threading.Thread(target=run_flask, daemon=True).start()
+        webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER'] = True
         webview.create_window("CyberScope", "http://127.0.0.1:5000/")
         webview.start()
 
