@@ -41,6 +41,8 @@
 ## 📎 How to Use
 
 1. Go to the CyberPulse web app: **(https://cyberpulse-cybersecurity-news-and-threat.onrender.com/)**
+`Note: Running on Render’s free plan means slow startup times and limited resources cause slow performance.`
+
 2. Enter keywords (e.g. `zero-day`, `crypto hack`, `phishing`, `APT`).
 3. Select the sources you want to include—or click "Toggle All Sources."
 4. Click **Search** to view real-time summaries from trusted news feeds.
