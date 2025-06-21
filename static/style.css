@@ -148,3 +148,40 @@ button.loading {
 .article-card a:hover {
   text-decoration: underline;
 }
+
+.dropdown-menu {
+  margin-top: 0;
+  background: #1c1c1c;
+  border-radius: 8px;
+  padding: 1em;
+  border: 1px solid #333;
+  color: #f1f1f1;
+}
+
+.dropdown-menu summary {
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #ff4d4d;
+}
+
+.dropdown-content {
+  margin-top: 1em;
+  font-size: 0.95em;
+}
+
+.dropdown-content h3 {
+  margin-top: 1em;
+  font-size: 1.1em;
+  color: #ff4d4d;
+}
+
+.dropdown-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dropdown-content li {
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
