@@ -41,6 +41,7 @@
 ## 📎 How to Use
 
 1. Go to the CyberPulse web app: **(https://cyberpulse-cybersecurity-news-and-threat.onrender.com/)**
+
 `Note: Running on Render’s free plan means slow startup times and limited resources cause slow performance.`
 
 2. Enter keywords (e.g. `zero-day`, `crypto hack`, `phishing`, `APT`).
