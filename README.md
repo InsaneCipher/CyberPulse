@@ -4,9 +4,9 @@
 
 ## 📸 Screenshot
 
-![screenshot](static/images/screenshot-1.png)
+![screenshot](static/images/Screenshot-1.png)
 
-![screenshot](static/images/screenshot-2.png)
+![screenshot](static/images/Screenshot-2.png)
 
 ## 🔍 Features
 
